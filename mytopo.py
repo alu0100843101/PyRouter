@@ -1,17 +1,25 @@
+################################################################################
+##### PROYECTO FINAL DE LABORATORIO DE REDES EN INGENIERÍA DE COMPUTADORES #####
+############## SDN: TOPOLOGÍA EN ÁRBOL PARA MININET USANDO PYTHON ##############
+################################################################################
+
 from mininet.topo import Topo
 
 class MyTopo ( Topo ):
 
     def __init__ ( self ):
 
-        # Nivel
+        # Nivel de inicio
         sw_level = 0
 
-        # Inicializamos la topología
+        # Llama al constructor de la clase de la que hereda
+        # super(myTopo, self).__init__()
         Topo.__init__ ( self )
 
-        # Agregamos hosts y switches
+        # Creamos el primer Switch y a partir de él, el resto de dispositivos
         switch = self.addSwitch ( 'S0' )
+
+        # Pasamos el primer switch y el numero de niveles que queremos
         self.createSwitch ( switch, 3 )
 
         self.sw_level = 0
