@@ -20,7 +20,7 @@ class L3Switch ( app_manager.RyuApp ):
     OFP_VERSION = [ofproto_v1_3.OFP_VERSION]
 
     def __init__(self, *args, **kwargs):
-        super ( L3switch, self ).__init__ ( *args, **kwargs )
+        super ( L3Switch, self ).__init__ ( *args, **kwargs )
         # Inicialización de tabla de direcciones MAC
         self.mac_to_port = {}
 
