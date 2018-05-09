@@ -1,5 +1,5 @@
 #!/usr/bin/python
-#coding=utf-8
+# -*- coding: utf-8 -*-
 
     # "set_ev_cls" especifica la clase de evento soportado y el estado
     # Existe una lista de estados predefinida
@@ -20,7 +20,7 @@ class L3Switch ( app_manager.RyuApp ):
     OFP_VERSION = [ofproto_v1_3.OFP_VERSION]
 
     def __init__(self, *args, **kwargs):
-		super ( L3switch, self ).__init__ ( *args, **kwargs )
+        super ( L3switch, self ).__init__ ( *args, **kwargs )
         # Inicialización de tabla de direcciones MAC
         self.mac_to_port = {}
 
