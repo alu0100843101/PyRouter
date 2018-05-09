@@ -47,3 +47,16 @@ Referencia: http://mininet.org/walkthrough/#part-1-everyday-mininet-usage
   $sudo mn --custom ourtopo.py --topo ourtopo,N,H --test pingall
 
 Referencia: https://gist.github.com/dinigo/7980534
+
+** mycontroller.py: Script en python del controlador usando RYU.
+
+  - La descripción y detalles del código se encuentran en comentarios dentro del
+  propio script.
+  - Script desarrollado siguiendo las anotaciones de la página de referencia.
+  - Ryu y Openflow se comunican mediante mensajes, éstos son controlados
+  mediante eventos utilizando "ryu.controller.handler.set_ev_cls".
+  - A modo resumen: Este script contiene un código en python que mediante
+  los eventos generados por la comunicación entre openflow y el controlador
+  simula el paso de paquetes. (Simula el funcionamiento de un switch).
+
+Referencia: https://osrg.github.io/ryu-book/en/html/switching_hub.html
