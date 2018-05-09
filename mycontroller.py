@@ -1,6 +1,11 @@
 #!/usr/bin/python
 #coding=utf-8
 
+    # "set_ev_cls" especifica la clase de evento soportado y el estado
+    # Existe una lista de estados predefinida
+    # El nombre del evento es:
+    # "ryu.controller.ofp_event.EventOFP + <OpenFlow message name>"
+
 from ryu.base import app_manager
 from ryu.controller import ofp_event
 from ryu.controller.handler import CONFIG_DISPATCHER, MAIN_DISPATCHER
@@ -18,12 +23,7 @@ class L3Switch ( app_manager.RyuApp ):
 		super ( L3switch, self ).__init__ ( *args, **kwargs )
         # Inicialización de tabla de direcciones MAC
         self.mac_to_port = {}
-    '''
-    # "set_ev_cls" especifica la clase de evento soportado y el estado
-    # Existe una lista de estados predefinida
-    # El nombre del evento es:
-    # "ryu.controller.ofp_event.EventOFP + <OpenFlow message name>"
-    '''
+
     @set_ev_cls(ofp_event.EventOFPSwitchFeatures, CONFIG_DISPATCHER)
     def switch_features_handler(self, ev):
         # Comunicación entre openflow y controlador Ryu

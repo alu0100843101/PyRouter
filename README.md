@@ -65,5 +65,6 @@ Referencia: https://gist.github.com/dinigo/7980534
   - A modo resumen: Este script contiene un código en python que mediante
   los eventos generados por la comunicación entre openflow y el controlador
   simula el paso de paquetes. (Simula el funcionamiento de un switch).
+  - $ryu-manager mininet/custom/mycontroller.py
 
 Referencia: https://osrg.github.io/ryu-book/en/html/switching_hub.html
