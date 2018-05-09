@@ -8,6 +8,13 @@
 #### ADÁN DE LA ROSA LUGO
 #### ANDREA PÉREZ QUINTANA
 
+## HERRAMIENTAS:
+
+** Mininet V 3.6
+** Openflow V 1.3
+** Ryu
+** Python V 2.7
+
 ## SOBRE EL PROYECTO:
 
 ** Mininet dispone de cuatro topologías diferentes que podemos usar: "single",
