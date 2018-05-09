@@ -17,7 +17,9 @@ class L3Switch ( app_manager.RyuApp ):
     def __init__(self, *args, **kwargs):
 		super ( L3switch, self ).__init__ ( *args, **kwargs )
         # Inicialización de tabla de direcciones MAC
-        self.mac_to_port = {}
+        self.mac_to_port = { ('1': '00:00:00:00:00:00')
+                             ('2': '00:00:00:00:00:11')
+                           }
 
     # "set_ev_cls" especifica la clase de evento soportado y el estado
     # Existe una lista de estados predefinida
