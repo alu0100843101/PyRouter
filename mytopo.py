@@ -1,4 +1,4 @@
-#coding=utf-8
+# -*- coding: utf-8 -*-
 '''
 ################################################################################
 ##### PROYECTO FINAL DE LABORATORIO DE REDES EN INGENIERÍA DE COMPUTADORES #####
