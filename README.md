@@ -1,23 +1,21 @@
-## README
+# LABORATORIO DE REDES EN INGENIERÍA DE COMPUTADORES
+# ESIIT - UNIVERSIDAD DE LA LAGUNA
 
-### LABORATORIO DE REDES EN INGENIERÍA DE COMPUTADORES
-### ESIIT - UNIVERSIDAD DE LA LAGUNA
-
-#### GRUPO 3:
-#### MARTÍN BELDA SOSA
-#### ADÁN DE LA ROSA LUGO
-#### ANDREA PÉREZ QUINTANA
+## GRUPO 3:
+### MARTÍN BELDA SOSA
+### ADÁN DE LA ROSA LUGO
+### ANDREA PÉREZ QUINTANA
 
 ## HERRAMIENTAS:
 
-** Mininet V 3.6
-** Openflow V 1.3
-** Ryu
-** Python V 2.7
+* Mininet V 3.6
+* Openflow V 1.3
+* Ryu
+* Python V 2.7
 
 ## SOBRE EL PROYECTO:
 
-** Mininet dispone de cuatro topologías diferentes que podemos usar: "single",
+##### Mininet dispone de cuatro topologías diferentes que podemos usar: "single",
 "linear", "tree" y "custom".
 
   - Single: Un switch conectado a N hosts: $sudo mn --topo single,N
@@ -31,7 +29,7 @@
 
 Referencia: http://www.academia.edu/8826530/TUTORIAL_MININET
 
-** mytopo.py: Script de ejemplo en python de una topología en árbol (custom).
+##### mytopo.py: Script de ejemplo en python de una topología en árbol (custom).
 
   - Se pueden asignar de forma automática IPs y macs a los hosts mediante la
   opción --mac: $sudo mn --mac
@@ -40,7 +38,7 @@ Referencia: http://www.academia.edu/8826530/TUTORIAL_MININET
 
 Referencia: http://mininet.org/walkthrough/#part-1-everyday-mininet-usage
 
-** ourtopo.py: Script en python de nuestra propia topología (custom).
+##### ourtopo.py: Script en python de nuestra propia topología (custom).
 
   - Se ha desarrollado una topología similar a la de árbol diferente a la del
   ejemplo anterior, utilizando un bucle en python, siguiendo un ejemplo de
@@ -55,7 +53,7 @@ Referencia: http://mininet.org/walkthrough/#part-1-everyday-mininet-usage
 
 Referencia: https://gist.github.com/dinigo/7980534
 
-** mycontroller.py: Script en python del controlador usando RYU.
+##### mycontroller.py: Script en python del controlador usando RYU.
 
   - La descripción y detalles del código se encuentran en comentarios dentro del
   propio script.
