@@ -1,4 +1,4 @@
-# New Document# Laboratorio de Redes en Ingenería de Computadores
+# Laboratorio de Redes en Ingenería de Computadores
 # ETSII - Universidad de La Laguna
 
 ## Grupo 3
