@@ -10,6 +10,8 @@ class MyTopo( Topo ):
         # Initialize topology
         Topo.__init__( self )
 
+        controller = L2Forwarding();
+
         # Add hosts and switches
         leftHost = self.addHost( 'h1', mac='00:00:00:00:00:01' )
         host = self.addHost( 'h2', mac='00:00:00:00:00:02' )
