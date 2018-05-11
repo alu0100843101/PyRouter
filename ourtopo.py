@@ -18,16 +18,16 @@ class ourTopo ( Topo ):
         super(ourTopo, self).__init__()
 
         # Instancia la cabecera
-        header = self.addHost('HEADER')
+        header = self.addHost('header')
 
         # Cada nodo, crea un link con la cabecera
         for n in range(0, nnodos):
-            nodo = self.addSwitch('S%s' %n)
+            nodo = self.addSwitch('s%s' %n)
             self.addLink(header, nodo)
 
             # Cada nodo tiene enlaces con H hosts
             for h in range(0, nhosts):
-                host = self.addHost('H%s' % (n*nnodos+h))
+                host = self.addHost('h%s' % (n*nnodos+h))
                 self.addLink(host, nodo)
 
 topos = { 'ourtopo': ( lambda nnodos, nhosts: ourTopo ( nnodos, nhosts ) ) }
