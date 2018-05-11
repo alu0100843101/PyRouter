@@ -1,18 +1,20 @@
 # -*- coding: utf-8 -*-
-'''
+
 ################################################################################
 ##### PROYECTO FINAL DE LABORATORIO DE REDES EN INGENIERÍA DE COMPUTADORES #####
 ############## SDN: TOPOLOGÍA EN ÁRBOL PARA MININET USANDO PYTHON ##############
 ################## CON 1 CABECERA, N NODOS Y H HOSTS POR NODO ##################
 ################################################################################
-'''
+
 from mininet.topo import Topo
+import mycontroller
 
 class ourTopo ( Topo ):
 
     # Por defecto se instancia la clase con 2 nodos y 5 hosts por cada uno
     def __init__( self, nnodos=2, nhosts=5):
 
+        controller = L3Switch();
         # Llama al constructor de la clase de la que hereda
         # Topo.__init__ ( self )
         super(ourTopo, self).__init__()
