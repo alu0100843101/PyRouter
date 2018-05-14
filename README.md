@@ -28,15 +28,8 @@ $ sudo mn --topo single,3 --mac --switch ovsk --controller remote -x
 ```
 # ryu-manager --verbose ryu/app/example_switch_13
 ```
-Donde ryu/app/example_switch_13 es la ruta del controlador. Esto requiere que el fichero .py sea compilado antes con:
-```
-mininet@mininet-vm:~$ python
-Python 2.7.6 (default, Nov 23 2017, 15:49:48) 
-[GCC 4.8.4] on linux2
-Type "help", "copyright", "credits" or "license" for more information.
->>> import py_compile
->>> py_compile.compile('micontrolador.py')
-```
+Donde ryu/app/example_switch_13 es la ruta del controlador.
+
 6. Para mostrar el tráfico en un host, usar el comando tcpdump en la terminal del host, por ejemplo para el host 1:
 ```
 # tcpdump -en -i h1-eth0
