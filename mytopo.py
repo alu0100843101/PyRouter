@@ -23,7 +23,7 @@ class MyTopo ( Topo ):
         switch = self.addSwitch ( 'S0' )
 
         # Pasamos el primer switch y el numero de niveles que queremos
-        self.createSwitch ( switch, 3 )
+        self.createSwitch ( switch, 1 )
 
         self.sw_level = 0
 
