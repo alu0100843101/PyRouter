@@ -38,6 +38,12 @@ Donde ryu/app/example_switch_13 es la ruta del controlador.
 ```
 > h1 ping -c 1 h2
 ```
+8. Para mostrar la flow table de un switch, usar el comando ovs-ofctl dump-flows. Por ejemplo para el switch 1:
+```
+# ovs-ofctl -O openflow13 dump-flows s1
+```
+
+
 - - - -
 ## Sobre el proyecto
 
