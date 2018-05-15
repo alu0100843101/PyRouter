@@ -4,18 +4,20 @@
 ##### Nota: si algún paso falla es recomendable averiguar por qué antes de seguir con el siguiente
 1. Update
 ```
-sudo apt update```
+sudo apt update
+```
 * Instalar Mininet
 ```
-sudo apt install mininet```
+sudo apt install mininet
+```
 *  Instalar RYU
   * Instalar dependencias
   ```
   sudo apt install gcc python-dev libffi-dev libssl-dev libxml2-dev libxslt1-dev zlib1g-dev```
   * Instalar Ryu
   ```
-  sudo pip install ryu  ```
-  * Si falta alguna dependencia de ryu
+  sudo pip install ryu  
+  ```
 
 
 
