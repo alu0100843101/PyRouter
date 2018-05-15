@@ -13,7 +13,8 @@ sudo apt install mininet
 *  Instalar RYU
   * Instalar dependencias
   ```
-  sudo apt install gcc python-dev libffi-dev libssl-dev libxml2-dev libxslt1-dev zlib1g-dev```
+  sudo apt install gcc python-dev libffi-dev libssl-dev libxml2-dev libxslt1-dev zlib1g-dev
+  ```
   * Instalar Ryu
   ```
   sudo pip install ryu  
