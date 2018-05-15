@@ -88,6 +88,7 @@ class PacketForward(app_manager.RyuApp):
 
 
             macip = self.port_mac_ip[in_port]
+            #Si es un ping al puerto de mi router
             if a.dst_ip == macip['ip']:
                 if a.opcode==1: # Request
 
