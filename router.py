@@ -40,13 +40,13 @@ class PacketForward(app_manager.RyuApp):
                 3: {'mac': maclist[2], 'ip':'10.0.3.1'},
         }
 
-        miprint("__INIT__: port_mac_ip")
-        print self.port_mac_ip
+        #miprint("__INIT__: port_mac_ip")
+        #print self.port_mac_ip
 
-        self.port_to_network = {
-            1: {'netip':'10.0.1.0', 'netmask':'255.255.255.0'},
-            2: {'netip':'10.0.2.0', 'netmask':'255.255.255.0'},
-            3: {'netip':'10.0.3.0', 'netmask':'255.255.255.0'},
+        self.connected_networks = {
+            1: IPv4Network('10.0.1.0/24'),
+            1: IPv4Network('10.0.1.0/24'),
+            1: IPv4Network('10.0.1.0/24')
         }
 
         self.arp_cache = {}
@@ -65,8 +65,8 @@ class PacketForward(app_manager.RyuApp):
         else:
              mod = parser.OFPFlowMod(datapath=datapath, priority=priority,
                                     match=match, instructions=inst, idle_timeout=idle_timeout, hard_timeout=hard_timeout)
-        miprint("ADD_FLOW: Añadiendo regla")
-        print mod
+        #miprint("ADD_FLOW: Añadiendo regla")
+        #print mod
         datapath.send_msg(mod)
 
 
@@ -91,7 +91,6 @@ class PacketForward(app_manager.RyuApp):
 
     @set_ev_cls(ofp_event.EventOFPPacketIn, MAIN_DISPATCHER)
     def packet_in_handler(self, ev):
-        miprint("PACKET_IN: He aquí un paquete")
         msg = ev.msg
         datapath = msg.datapath
         ofproto = datapath.ofproto
@@ -101,24 +100,26 @@ class PacketForward(app_manager.RyuApp):
 
         eth = pkt.get_protocol(ethernet.ethernet)
         in_port = msg.match['in_port']
-        miprint("PACKET_IN: Mi ARP Cache es: ")
-        print self.arp_cache
+        miprint("PACKET_IN: Recibido paquete ")
+        print pkt
+        #miprint("PACKET_IN: Mi ARP Cache es: ")
+        #print self.arp_cache
 
         if (eth.ethertype == ether.ETH_TYPE_ARP):
             a = pkt.get_protocol(arp.arp)
-            print a
-            miprint("PACKET_IN: Peticion ARP")
+            #print a
+            #miprint("PACKET_IN: Peticion ARP")
             macip = self.port_mac_ip[in_port]
-            miprint("PACKET_IN: Comparando " + a.dst_ip + " con " + macip['ip'])
+            #miprint("PACKET_IN: Comparando " + a.dst_ip + " con " + macip['ip'])
             # Si es para la interfaz de mi router
             if a.dst_ip == macip['ip']:
-                miprint("PACKET_IN: Paquete ARP al puerto de mi router")
+                #miprint("PACKET_IN: Paquete ARP al puerto de mi router")
                 if a.opcode==1: # Si es una petición, devolver mi mac en ese puerto
-                    miprint("PACKET_IN: El paquete es una peticion")
+                    #miprint("PACKET_IN: El paquete es una peticion")
                     # Le digo al host que la mac que está buscando es la de mi interfaz
                     self.arp_reply(a.src_ip, a.src_mac, in_port,  datapath)
                 elif a.opcode==2: # Si es una respuesta, asociar mac e ip origen a ese puerto
-                    miprint("PACKET_IN: El paquete es una respuesta")
+                    #miprint("PACKET_IN: El paquete es una respuesta")
                     self.arp_cache.setdefault(in_port, {})
                     self.arp_cache[in_port][a.src_ip] = a.src_mac
                     # Sacamos de cola y procesamos los forward
@@ -165,11 +166,11 @@ class PacketForward(app_manager.RyuApp):
         # ip: IP desde la que se está preguntando (ip del host)
         # mac: mac desde la que se está perguntando (mac del host)
         # port: puerto en el que se está preguntando
-        miprint("ARP_REPLY: Generando respuesta para el puerto " + str(port))
+        #miprint("ARP_REPLY: Generando respuesta para el puerto " + str(port))
         # Obtener MAC e Ip del puerto del switch
         macip = self.port_mac_ip[port];
-        miprint("ARP_REPLY: Información del puerto " + str(port))
-        print macip
+        #miprint("ARP_REPLY: Información del puerto " + str(port))
+        #print macip
 
         # Crear cabecera ethernet con mac destino, la del host,
         # mac origen, la de mi interfaz,
@@ -190,8 +191,8 @@ class PacketForward(app_manager.RyuApp):
         p.add_protocol(e)
         p.add_protocol(a)
 
-        miprint("ARP_REPLY: Enviando respuesta ARP al puerto " + str(port))
-        print p
+        #miprint("ARP_REPLY: Enviando respuesta ARP al puerto " + str(port))
+        #print p
         self.send_packet(datapath, port, p)
 
     # Metodo para enviar peticiones ARP desde el switch
@@ -221,8 +222,8 @@ class PacketForward(app_manager.RyuApp):
         p.add_protocol(e)
         p.add_protocol(a)
 
-        miprint("ARP_REQUEST: Enviando PETICION ARP al puerto " + str(port))
-        print p
+        #miprint("ARP_REQUEST: Enviando PETICION ARP al puerto " + str(port))
+        #print p
         self.send_packet(datapath, port, p)
 
 
@@ -231,7 +232,7 @@ class PacketForward(app_manager.RyuApp):
         ofproto = datapath.ofproto
         parser = datapath.ofproto_parser
         pkt.serialize()
-        miprint("SEND_PACKET: Enviando paquete")
+        #miprint("SEND_PACKET: Enviando paquete")
         self.logger.info("%s" % (pkt,))
         data = pkt.data
         actions = [parser.OFPActionOutput(port=port)]
@@ -248,8 +249,8 @@ class PacketForward(app_manager.RyuApp):
         ofproto = datapath.ofproto
         parser = datapath.ofproto_parser
         pkt=packet.Packet(msg.data)
-        miprint("SET_FORWARD_RULES: Añadiendo reglas para paquete:")
-        print pkt
+        #miprint("SET_FORWARD_RULES: Añadiendo reglas para paquete:")
+        #print pkt
         eth=pkt.get_protocol(ethernet.ethernet)
         ip=pkt.get_protocol(ipv4.ipv4)
 
@@ -269,7 +270,7 @@ class PacketForward(app_manager.RyuApp):
                       idle_timeout=20)
 
     def decide_port(self, ip):
-        miprint("DECIDE_PORT: A qué puerto mando este paquete?")
+        #miprint("DECIDE_PORT: A qué puerto mando este paquete?")
         # Libreria ipaddress
         ipaddr1 = IPv4Address(unicode(str(ip)))
 
@@ -284,14 +285,14 @@ class PacketForward(app_manager.RyuApp):
 
 
     def forward(self, msg):
-        miprint("FORWARD: este paquete no es para mi")
+        #miprint("FORWARD: este paquete no es para mi")
         datapath = msg.datapath
         pkt = packet.Packet(msg.data)
         ip = pkt.get_protocol(ipv4.ipv4)
         port = self.decide_port(ip.dst)
         self.arp_cache.setdefault(port, {})
-        miprint("FORWARD: Mi arp cache es")
-        print self.arp_cache
+        #miprint("FORWARD: Mi arp cache es")
+        #print self.arp_cache
         if ip.dst in self.arp_cache[port].keys():
             self.set_forward_rules(msg, port)
         else:
