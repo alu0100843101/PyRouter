@@ -44,6 +44,8 @@ class PacketForward(app_manager.RyuApp):
         else:
              mod = parser.OFPFlowMod(datapath=datapath, priority=priority,
                                     match=match, instructions=inst, idle_timeout=idle_timeout, hard_timeout=hard_timeout)
+        miprint("ADD_FLOW: Añadiendo regla")
+        print mod
         datapath.send_msg(mod)
 
 
@@ -129,6 +131,7 @@ class PacketForward(app_manager.RyuApp):
         p.add_protocol(e)
         p.add_protocol(a)
 
+        miprint("ARP_REPLY: Enviando paquete respuesta ARP")
         print p
         self.send_packet(datapath, port, p)
 
@@ -146,6 +149,7 @@ class PacketForward(app_manager.RyuApp):
         p.add_protocol(e)
         p.add_protocol(a)
 
+        miprint("ARP_REQUEST: enviando paquete con peticion ARP")
         print p
         self.send_packet(datapath, port, p)
 
@@ -170,8 +174,6 @@ class PacketForward(app_manager.RyuApp):
         datapath = msg.datapath
         ofproto = datapath.ofproto
         parser = datapath.ofproto_parser
-
-
 
         pkt=packet.Packet(msg.data)
         eth=pkt.get_protocol(ethernet.ethernet)

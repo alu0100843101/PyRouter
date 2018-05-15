@@ -1,7 +1,88 @@
-# Laboratorio de Redes en Ingenería de Computadores
-# ETSII - Universidad de La Laguna
+# Router Openflow usando la API de Ryu (Python)
 
-## Grupo 3
+## Instalacion del entorno en linux (probado en Ubuntu 16.04)
+##### Nota: si algún paso falla es recomendable averiguar por qué antes de seguir con el siguiente
+1. Update
+```
+sudo apt update```
+* Instalar Mininet
+```
+sudo apt install mininet```
+*  Instalar RYU
+  * Instalar dependencias
+  ```
+  sudo apt install gcc python-dev libffi-dev libssl-dev libxml2-dev libxslt1-dev zlib1g-dev```
+  * Instalar Ryu
+  ```
+  sudo pip install ryu  ```
+  * Si falta alguna dependencia de ryu
+
+
+
+## Pasos para probar un controlador
+1. Iniciar mininet con la topologia deseada, por ejemplo. Indicar que se va a usar un controlador remoto y que abra x-terms por cada componente.
+```
+$ sudo mn --topo single,3 --mac --switch ovsk --controller remote -x
+```
+2. En la terminal de cada switch, asignarle la versión 1.3 de openflow:
+```
+s1# ovs-vsctl set Bridge s1 protocols=OpenFlow13
+```
+3. En la terminal del controlador, iniciar el controlador, por ejemplo:
+```
+c0# ryu-manager --verbose ryu/app/example_switch_13
+```
+Donde ryu/app/example_switch_13 es la ruta del controlador.
+
+4. Para mostrar el tráfico en un host, usar el comando tcpdump en la terminal del host, por ejemplo para el host 1:
+```
+h1# tcpdump -en -i h1-eth0
+```
+5. En la ventana de mininet realizar las operaciones necesarias, como enviar un ping:
+```
+mininet> h1 ping -c 1 h2
+```
+6. Para mostrar la flow table de un switch, usar el comando ovs-ofctl dump-flows. Por ejemplo para el switch 1:
+```
+s1# ovs-ofctl -O openflow13 dump-flows s1
+```
+
+## Pasos para probar nuestro controlador
+El controlador se encuentra en el fichero `router.py`. Está inicializado para una topología en árbol con un switch y 3 hosts. Asigna una ip a cada una de las 3 interfaces del switch guardándola por pares de valor mac/ip.
+La topología que se usa está en el fichero `single3.py`, que inicializa mac's, ip's y máscaras de los host. El fichero `single3gateway.py` es un script para asignar el gateway de cada host, y guardar las mac's de cada interfaz del switch en un fichero, que es abierto y leido en `router.py` para asignar los pares mac/ip. Esto se debe a que en cada ejecucion de mininet las macs asociadas a las interfaces del switch cambian y se desconoce cómo pueden asignarse unas mac fijas.
+### TL;DR
+1. Ejecuta el comando:
+```
+sudo mn --custom single3.py --topo single3 --switch ovsk --controller remote --pre single3gateway.py -x
+```
+Si no quieres que se abran las terminales quita el `-x`
+2. En la terminal del switch s1, indicarle la version de openflow. Importante las mayúsculas y minúsculas.
+```
+ovs-vsctl set bridge s1 protocols=OpenFlow
+```
+3. En la terminal del controlador c0:
+```
+ryu-manager --verbose router.py
+```
+4. Ahora puedes probar a hacer un ping
+```
+mininet> h1 ping -c 1 h2
+```
+
+
+- - - -
+## Enlaces a referencias usadas para este proyecto
+* [Tabla de openflow (vídeo)](https://www.youtube.com/watch?v=-xLQHld3fPI)
+* [Introducción a OpenFlow(vídeo)](https://www.youtube.com/watch?v=l25Ukkmk6Sk)
+* [Documentación de openflow](http://flowgrammable.org/sdn/openflow/message-layer/)
+* [El protocolo ARP (vídeo)](https://www.youtube.com/watch?v=2ydK33mPhTY)
+* Tutoriales
+  * [Mininet](http://mininet.org/walkthrough/)
+  * [Switching hub con RYU](https://osrg.github.io/ryu-book/en/html/switching_hub.html)
+
+
+
+## Autores
 * Martín Belda Sosa
 * Adán de la Rosa Lugo
 * Andrea Pérez Quintana
@@ -12,109 +93,3 @@
 * Openflow V 1.3
 * Ryu
 * Python V 2.7
-
-## Pasos para probar el controlador
-1. Iniciar la máquina virtual con mininet y ryu instalado o el entorno que se desee
-2. En caso de usar una máquina virtual, [configurarla para que se pueda acceder con ssh](https://github.com/mininet/openflow-tutorial/wiki/Set-up-Virtual-Machine#Access_VM_via_SSH)
-3. Iniciar mininet con la topologia deseada, por ejemplo. Indicar que se va a usar un controlador remoto y que abra x-terms por cada componente.
-```
-$ sudo mn --topo single,3 --mac --switch ovsk --controller remote -x
-```
-4. En la terminal de cada switch, asignarle la versión 1.3 de openflow:
-```
-# ovs-vsctl set Bridge s1 protocols=OpenFlow13
-```
-5. En la terminal del controlador, iniciar el controlador, por ejemplo:
-```
-# ryu-manager --verbose ryu/app/example_switch_13
-```
-Donde ryu/app/example_switch_13 es la ruta del controlador.
-
-6. Para mostrar el tráfico en un host, usar el comando tcpdump en la terminal del host, por ejemplo para el host 1:
-```
-# tcpdump -en -i h1-eth0
-```
-7. En la ventana de mininet realizar las operaciones necesarias, como enviar un ping:
-```
-> h1 ping -c 1 h2
-```
-8. Para mostrar la flow table de un switch, usar el comando ovs-ofctl dump-flows. Por ejemplo para el switch 1:
-```
-# ovs-ofctl -O openflow13 dump-flows s1
-```
-
-
-- - - -
-## Sobre el proyecto
-
-##### Mininet dispone de cuatro topologías diferentes que podemos usar: "single",
-"linear", "tree" y "custom".
-
-- Single: Un switch conectado a N hosts:
-
-```
-$ sudo mn --topo single,N
-```
-- Linear: Cada switch (N switches) se conecta con otro de forma lineal y cada
-switch tiene un host: 
-```
-$ sudo mn --topo linear,N
-```
-- Tree: Topología en árbol con profundidad N y anchura M:
-```
-$ sudo mn --topo tree,depth=n,fanout=m
-```
-- Custom: Crear un archivo en python con su topología:
-```
-$ sudo mn --custom mytopo.py --topo mytopo
-```
-En este caso, localización en: `~/mininet/custom`
-
-[Referencia](http://www.academia.edu/8826530/TUTORIAL_MININET)
-
-##### mytopo.py: Script de ejemplo en python de una topología en árbol (custom).
-
-- Se pueden asignar de forma automática IPs y macs a los hosts mediante la
-opción --mac: 
-```
-$sudo mn --mac
-```
-- El Script ha sido desarrollado a partir del script que viene al instalar
-mininet y del "walkthrough"de la referencia.
-
-[Referencia](http://mininet.org/walkthrough/#part-1-everyday-mininet-usage)
-
-##### ourtopo.py: Script en python de nuestra propia topología (custom).
-
-- Se ha desarrollado una topología similar a la de árbol diferente a la del
-ejemplo anterior, utilizando un bucle en python, siguiendo un ejemplo de
-código publicado en github (referencia). En este caso se dispone de un nodo
-cabecera (header) y a él se conectan una serie de nodos especificados
-(switches) y a estos, una serie de hosts.
-- Para ejecutar con N nodos y H hosts por nodo:
-```
-$sudo mn --custom ourtopo.py --topo ourtopo,N,H
-```
-- También podemos ejecutar el comando con un test de conectividad mediante la
-opción --test pingall:
-```
-$sudo mn --custom ourtopo.py --topo ourtopo,N,H --test pingall
-```
-
-[Referencia](https://gist.github.com/dinigo/7980534)
-
-##### mycontroller.py: Script en python del controlador usando RYU.
-
-- La descripción y detalles del código se encuentran en comentarios dentro del
-propio script.
-- Script desarrollado siguiendo las anotaciones de la página de referencia.
-- Ryu y Openflow se comunican mediante mensajes, éstos son controlados
-mediante eventos utilizando `"ryu.controller.handler.set_ev_cls".`
-- A modo resumen: Este script contiene un código en python que mediante
-los eventos generados por la comunicación entre openflow y el controlador
-simula el paso de paquetes. (Simula el funcionamiento de un switch).
-```
-$ ryu-manager mininet/custom/mycontroller.py
-```
-
-[Referencia](https://osrg.github.io/ryu-book/en/html/switching_hub.html)

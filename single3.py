@@ -20,10 +20,10 @@ class MyTopo ( Topo ):
         Topo.__init__ ( self )
 
         s1 = self.addSwitch('s1')
-        h1 = self.addHost('h1', ip='10.0.1.10', mask='255.255.255.0', mac='00:00:00:00:00:01', gateway='10.0.1.1')
-        h2 = self.addHost('h2', ip='10.0.2.10', mask='255.255.255.0', mac='00:00:00:00:00:02', gateway='10.0.2.1')
-        h3 = self.addHost('h3', ip='10.0.3.10', mask='255.255.255.0', mac='00:00:00:00:00:03', gateway='10.0.3.1')
-
+        h1 = self.addHost('h1', ip='10.0.1.10/24', mac='00:00:00:00:00:01')
+        h2 = self.addHost('h2', ip='10.0.2.10/24', mac='00:00:00:00:00:02')
+        h3 = self.addHost('h3', ip='10.0.3.10/24', mac='00:00:00:00:00:03')
+        # Nota: los gateways se asignan en single3gateways.py
         self.addLink(s1, h1)
         self.addLink(s1, h2)
         self.addLink(s1, h3)
