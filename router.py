@@ -17,7 +17,6 @@ from ipaddress import IPv4Address, IPv4Network, IPv4Interface
 def miprint(s):
     print "*"*10+s
 
-
 class PacketForward(app_manager.RyuApp):
     OFP_VERSIONS = [ofproto_v1_3.OFP_VERSION]
 
@@ -34,6 +33,7 @@ class PacketForward(app_manager.RyuApp):
         maclist.append(f.readline()[:-1])
         f.close()
 
+        # Pares mac-ip asociados a las interfaces del switch
         self.port_mac_ip = {
                 1: {'mac': maclist[0], 'ip':'10.0.1.1'}, # En
                 2: {'mac': maclist[1], 'ip':'10.0.2.1'},
@@ -43,11 +43,18 @@ class PacketForward(app_manager.RyuApp):
         #miprint("__INIT__: port_mac_ip")
         #print self.port_mac_ip
 
-        self.connected_networks = {
-            1: IPv4Network('10.0.1.0/24'),
-            1: IPv4Network('10.0.1.0/24'),
-            1: IPv4Network('10.0.1.0/24')
-        }
+        # Connected networks es una pseudo-tabla de enrutamiento
+        # Importante ordenar las redes por tamaño de máscara
+        # para que siempre esté arriba la que tiene mayor máscara
+        # de esta manera será la primera elección
+        # Añadir gateways aqui
+        self.connected_networks = [
+            { 'port':1, 'address':IPv4Network(unicode('10.0.1.0/24')) },
+            { 'port':2, 'address':IPv4Network(unicode('10.0.2.0/24')) },
+            { 'port':3, 'address':IPv4Network(unicode('10.0.3.0/24')) }
+        ]
+
+        self.default = {'port':4, 'gateway':IPv4Address(unicode('10.0.4.1'))}
 
         self.arp_cache = {}
         self.queue={}
@@ -100,8 +107,8 @@ class PacketForward(app_manager.RyuApp):
 
         eth = pkt.get_protocol(ethernet.ethernet)
         in_port = msg.match['in_port']
-        miprint("PACKET_IN: Recibido paquete ")
-        print pkt
+        # miprint("PACKET_IN: Recibido paquete ")
+        # print pkt
         #miprint("PACKET_IN: Mi ARP Cache es: ")
         #print self.arp_cache
 
@@ -200,7 +207,7 @@ class PacketForward(app_manager.RyuApp):
         # ip: ip del host al que se quiere preguntar
         # port: puerto en donde está ese host
         # obtener la ip y mac de ese puerto del switch
-        macip = self.port_mac_ip[port];
+        macip = self.port_mac_ip[port]
         # construir cabecera Ethernet con
         # mac origen, la mac del puerto
         # mac destino, todo a ff porque es un broadcast
@@ -255,6 +262,7 @@ class PacketForward(app_manager.RyuApp):
         ip=pkt.get_protocol(ipv4.ipv4)
 
         new_src_mac=self.port_mac_ip[port]['mac']
+        # Cambiar ip destino por la del gateway si hay gateway
         new_dst_mac=self.arp_cache[port][ip.dst]
 
 
@@ -274,14 +282,10 @@ class PacketForward(app_manager.RyuApp):
         # Libreria ipaddress
         ipaddr1 = IPv4Address(unicode(str(ip)))
 
-        # Importante ordenar los if de mayor tamaño de máscara
-        # a menor para que siempre coja la red con mayor máscara
-        if ipaddr1 in IPv4Network(unicode('10.0.1.0/24')):
-            return 1
-        elif ipaddr1 in IPv4Network(unicode('10.0.2.0/24')):
-            return 2
-        elif ipaddr1 in IPv4Network(unicode('10.0.3.0/24')):
-            return 3
+        for network in self.connected_networks:
+            if ipaddr1 in network['address']:
+                return network['port']
+        # Añadir if gateway
 
 
     def forward(self, msg):
@@ -296,6 +300,7 @@ class PacketForward(app_manager.RyuApp):
         if ip.dst in self.arp_cache[port].keys():
             self.set_forward_rules(msg, port)
         else:
+            # Cambiar ip destino por un gateway
             self.arp_request(ip.dst,port,datapath)
             # El paquete va a la cola hasta que vuelva la respuesta a la petición ARP.
             self.queue.setdefault(port,{})

@@ -59,6 +59,7 @@ La topología que se usa está en el fichero `single3.py`, que inicializa mac's,
 sudo mn --custom single3.py --topo single3 --switch ovsk --controller remote --pre single3gateway.py -x
 ```
 Si no quieres que se abran las terminales quita el `-x`
+
 2. En la terminal del switch s1, indicarle la version de openflow. Importante las mayúsculas y minúsculas.
 ```
 ovs-vsctl set bridge s1 protocols=OpenFlow
